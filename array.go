@@ -20,12 +20,11 @@ type EllipsisType struct {
 }
 
 func (a *ArrayType) Equal(t Type) bool {
-	v, ok := t.(*ArrayType)
-	if !ok {
+	if !a.pkg.Equal(t.Package()) {
 		return false
 	}
-
-	if !a.pkg.Equal(v.pkg) {
+	v, ok := t.(*ArrayType)
+	if !ok {
 		return false
 	}
 
@@ -48,7 +47,7 @@ func (a *ArrayType) String() string {
 }
 
 func (a *ArrayType) Package() *Package {
-	return a.Package()
+	return a.pkg
 }
 
 func (a *ArrayType) lateBind() error {

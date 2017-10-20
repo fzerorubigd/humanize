@@ -38,3 +38,16 @@ func newType(p *Package, f *File, e ast.Expr) Type {
 		return nil
 	}
 }
+
+// FindTypeName try to find type name based on the type. it can fail for
+// anonymous types, so watch about the result
+func FindTypeName(t Type) (*TypeName, error) {
+	switch v := t.(type) {
+	case *IdentType:
+		return t.Package().FindType(v.Ident)
+	case *StarType:
+		return FindTypeName(v.Target)
+	default:
+		return nil, fmt.Errorf("%T is not supported yet", t)
+	}
+}
