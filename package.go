@@ -50,7 +50,9 @@ func parsePackageFullPath(path, folder string) (*Package, error) {
 			}
 			fl.FileName = path
 			p.Files = append(p.Files, fl)
-			p.Name = fl.PackageName
+			if p.Name == "" {
+				p.Name = fl.PackageName
+			}
 
 			return nil
 		},
