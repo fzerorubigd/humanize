@@ -35,7 +35,11 @@ func (i *IdentType) lateBind() error {
 }
 
 func getIdent(p *Package, _ *File, t *ast.Ident) Type {
-	// ident is the simplest one.
+	// ident is the simplest one (I was wrong :)) ).
+	ident := nameFromIdent(t)
+	if isBuiltinIdent(ident) {
+		p = nil
+	}
 	return &IdentType{
 		pkg:   p,
 		Ident: nameFromIdent(t),
@@ -45,6 +49,7 @@ func getIdent(p *Package, _ *File, t *ast.Ident) Type {
 func getBasicIdent(t string) Type {
 	return &IdentType{
 		Ident: t,
+		pkg:   nil,
 	}
 }
 

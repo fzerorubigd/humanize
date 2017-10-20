@@ -3,14 +3,6 @@ package humanize
 import (
 	"os"
 	"path/filepath"
-	"sync"
-)
-
-var (
-	builtin *Package
-
-	cache = make(map[string]*Package)
-	lock  = sync.RWMutex{}
 )
 
 // Package is the package in one place
@@ -33,20 +25,6 @@ func (p *Package) Bind() error {
 
 func (p *Package) Equal(t *Package) bool {
 	return p.Path == t.Path
-}
-
-func setCache(folder string, p *Package) {
-	lock.Lock()
-	defer lock.Unlock()
-
-	cache[folder] = p
-}
-
-func getCache(folder string) *Package {
-	lock.RLock()
-	defer lock.RUnlock()
-
-	return cache[folder]
 }
 
 func parsePackageFullPath(path, folder string) (*Package, error) {
@@ -95,15 +73,4 @@ func ParsePackage(path string, packages ...string) (*Package, error) {
 	}
 
 	return parsePackageFullPath(path, folder)
-}
-
-func getBuiltin() *Package {
-	if builtin == nil {
-		var err error
-		builtin, err = ParsePackage("builtin")
-		if err != nil {
-			panic(err)
-		}
-	}
-	return builtin
 }

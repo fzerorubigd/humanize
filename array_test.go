@@ -38,6 +38,7 @@ func TestArray(t *testing.T) {
 		f, err := ParseFile(arrayCode, p)
 		So(err, ShouldBeNil)
 		p.Files = append(p.Files, f)
+		So(p.Bind(), ShouldBeNil)
 		Convey("array string", func() {
 			t, err := f.FindType("ARRAY")
 			So(err, ShouldBeNil)

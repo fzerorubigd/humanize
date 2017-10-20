@@ -62,6 +62,10 @@ var on = onion.New()
 
 var xx = http.ConnState(10)
 
+func Test() error {
+	return nil
+}
+
 `
 
 const wrongTypeCast = `
@@ -268,6 +272,19 @@ func TestType(t *testing.T) {
 			v, err := p.FindVariable("xx")
 			So(err, ShouldBeNil)
 			So(v.Type.String(), ShouldEqual, "http.ConnState")
+		})
+
+		Convey("check for builtin error type", func() {
+			So(p.Bind(), ShouldBeNil)
+
+			errType := &IdentType{
+				pkg:   getBuiltin(),
+				Ident: "error",
+			}
+
+			fn, err := p.FindFunction("Test")
+			So(err, ShouldBeNil)
+			So(errType.Equal(fn.Type.Results[0].Type), ShouldBeTrue)
 		})
 
 	})

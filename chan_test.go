@@ -25,6 +25,7 @@ func TestChan(t *testing.T) {
 		f, err := ParseFile(chanCode, p)
 		So(err, ShouldBeNil)
 		p.Files = append(p.Files, f)
+		So(p.Bind(), ShouldBeNil)
 		Convey("chan functions", func() {
 			t, err := p.FindType("CHAN")
 			So(err, ShouldBeNil)

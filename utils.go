@@ -8,6 +8,15 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
+)
+
+var (
+	builtin     *Package
+	builtinType map[string]bool
+
+	cache = make(map[string]*Package)
+	lock  = sync.RWMutex{}
 )
 
 func translateToFullPath(path string, packages ...string) (string, error) {
@@ -89,4 +98,48 @@ func checkTypeCast(p *Package, bi *Package, args []ast.Expr, name string) (Type,
 	}
 
 	return nil, fmt.Errorf("can not find the call for %s", name)
+}
+
+func setCache(folder string, p *Package) {
+	lock.Lock()
+	defer lock.Unlock()
+
+	cache[folder] = p
+}
+
+func getCache(folder string) *Package {
+	lock.RLock()
+	defer lock.RUnlock()
+
+	return cache[folder]
+}
+
+func getBuiltin() *Package {
+	if builtin == nil {
+		var err error
+		builtin, err = ParsePackage("builtin")
+		if err != nil {
+			panic(err)
+		}
+	}
+	return builtin
+}
+
+func isBuiltinIdent(ident string) bool {
+	if builtinType == nil {
+		builtinType = make(map[string]bool)
+		b := getBuiltin()
+		for f := range b.Files {
+			for t := range b.Files[f].Types {
+				builtinType[b.Files[f].Types[t].Name] = true
+			}
+		}
+	}
+
+	return builtinType[ident]
+
+}
+
+func init() {
+	getBuiltin()
 }
