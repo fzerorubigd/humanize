@@ -38,7 +38,7 @@ var s = im.invalid_func()
 const invalidImport3 = `
 package invalid
 import (
-    os "github.com/goraz/annotate/fixture"
+    os "github.com/fzerorubigd/annotate/fixture"
 )
 var s = os.invalid_func()
 
@@ -46,14 +46,14 @@ var s = os.invalid_func()
 const invalidImport4 = `
 package invalid
 import (
-     os "github.com/goraz/humanize/fixture"
+     os "github.com/fzerorubigd/humanize/fixture"
 )
 var s = os.NoReturn()
 
 `
 const validImport5 = `
 package invalid
-import "github.com/goraz/humanize/fixture"
+import "github.com/fzerorubigd/humanize/fixture"
 var s = fixture.NewF()
 var f = fixture.NewFile()
 `

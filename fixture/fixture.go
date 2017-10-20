@@ -5,7 +5,7 @@ package fixture
 import (
 	"os"
 
-	"github.com/fzerorubigd/humanize"
+	"github.com/fzerorubigd/onion"
 )
 
 var X, err = os.Open("the_file")
@@ -21,7 +21,7 @@ type f2 struct {
 
 type f3 struct {
 	*f
-	*humanize.IdentType
+	*onion.Onion
 }
 
 type T1 interface {
