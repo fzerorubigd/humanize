@@ -24,6 +24,10 @@ func (s *SelectorType) Package() *Package {
 }
 
 func (s *SelectorType) Equal(t Type) bool {
+	if b := s.Type.Equal(t); b == true {
+		return b
+	}
+
 	v, ok := t.(*SelectorType)
 	if !ok {
 		return false
