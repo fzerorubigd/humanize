@@ -6,7 +6,8 @@ import (
 )
 
 type Function struct {
-	pkg *Package
+	pkg  *Package
+	file *File
 
 	Name     string
 	Docs     Docs
@@ -60,12 +61,22 @@ func (f *Function) lateBind() error {
 	return nil
 }
 
+func (f *Function) Package() *Package {
+	return f.pkg
+}
+
+func (f *Function) File() *File {
+	return f.file
+}
+
 // NewFunction return a single function annotation
 func getFunction(p *Package, fl *File, f *ast.FuncDecl) *Function {
-	res := &Function{}
-
-	res.Name = nameFromIdent(f.Name)
-	res.Docs = docsFromNodeDoc(f.Doc)
+	res := &Function{
+		pkg:  p,
+		file: fl,
+		Name: nameFromIdent(f.Name),
+		Docs: docsFromNodeDoc(f.Doc),
+	}
 
 	if f.Recv != nil {
 		// Method receiver is only one parameter

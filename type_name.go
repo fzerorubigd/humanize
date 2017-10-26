@@ -7,6 +7,8 @@ import (
 // TypeName is the type with name in a package
 type TypeName struct {
 	pkg  *Package
+	file *File
+
 	Docs Docs
 	Type Type
 	Name string
@@ -75,11 +77,20 @@ func (tn *TypeName) lateBind() error {
 	return nil
 }
 
+func (tn *TypeName) Package() *Package {
+	return tn.pkg
+}
+
+func (tn *TypeName) File() *File {
+	return tn.file
+}
+
 // newTypeName handle a type with name
 func newTypeName(p *Package, f *File, t *ast.TypeSpec, c *ast.CommentGroup) *TypeName {
 	doc := docsFromNodeDoc(c, t.Doc)
 	return &TypeName{
 		pkg:  p,
+		file: f,
 		Docs: doc,
 		Type: newType(p, f, t.Type),
 		Name: nameFromIdent(t.Name),

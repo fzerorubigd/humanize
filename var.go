@@ -8,7 +8,9 @@ import (
 
 // Variable is a string represent of a function parameter
 type Variable struct {
-	pkg  *Package
+	pkg *Package
+	fl  *File
+
 	Name string
 	Type Type
 	Docs Docs
@@ -135,6 +137,14 @@ func (v *Variable) lateBind() error {
 	return lateBind(v.Type)
 }
 
+func (v *Variable) Package() *Package {
+	return v.pkg
+}
+
+func (v *Variable) File() *File {
+	return v.file
+}
+
 func variableFromValue(p *Package, f *File, name string, index int, e []ast.Expr) *Variable {
 	var t Type
 	var caller *ast.CallExpr
@@ -165,6 +175,7 @@ func variableFromValue(p *Package, f *File, name string, index int, e []ast.Expr
 	}
 	return &Variable{
 		pkg:    p,
+		fl:     f,
 		Name:   name,
 		Type:   t,
 		caller: caller,
@@ -176,6 +187,7 @@ func variableFromValue(p *Package, f *File, name string, index int, e []ast.Expr
 func variableFromExpr(p *Package, f *File, name string, e ast.Expr) *Variable {
 	return &Variable{
 		pkg:  p,
+		fl:   f,
 		Name: name,
 		Type: newType(p, f, e),
 	}
