@@ -101,6 +101,7 @@ func getFunction(p *Package, fl *File, f *ast.FuncDecl) *Function {
 	}
 
 	res.Type = &FuncType{
+		pkg:        p,
 		Parameters: getVariableList(p, fl, f.Type.Params),
 		Results:    getVariableList(p, fl, f.Type.Results),
 	}
