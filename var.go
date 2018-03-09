@@ -42,26 +42,38 @@ func (v *Variable) lateBind() error {
 		switch c := v.caller.Fun.(type) {
 		case *ast.Ident:
 			name := nameFromIdent(c)
-			bl, err := getBuiltin().FindFunction(name)
+			fn, err := getBuiltin().FindFunction(name)
 			if err == nil {
-				v.Type = bl.Type
-			} else {
-				var t Type
-				fn, err := v.pkg.FindFunction(name)
-				if err == nil {
-					if len(fn.Type.Results) <= v.index {
-						return fmt.Errorf("%d result is available but want the %d", len(fn.Type.Results), v.index)
-					}
-					t = fn.Type.Results[v.index].Type
-				} else {
-					t, err = checkTypeCast(v.pkg, getBuiltin(), v.caller.Args, name)
-					if err != nil {
-						return err
-					}
+				// make and new are exceptions,
+				if fn.Name == "make" {
+					v.Type = newType(v.pkg, v.file, v.caller.Args[0])
 				}
 
-				v.Type = t
+				if fn.Name == "new" {
+					tt := newType(v.pkg, v.file, v.caller.Args[0])
+					v.Type = &StarType{
+						Target: tt,
+					}
+				}
+				break
 			}
+
+			fn, err = v.pkg.FindFunction(name)
+			var t Type
+			if err == nil {
+				if len(fn.Type.Results) <= v.index {
+					return fmt.Errorf("%d result is available but want the %d", len(fn.Type.Results), v.index)
+				}
+				t = fn.Type.Results[v.index].Type
+			} else {
+				t, err = checkTypeCast(v.pkg, getBuiltin(), v.caller.Args, name)
+				if err != nil {
+					return err
+				}
+			}
+
+			v.Type = t
+
 		case *ast.SelectorExpr:
 			var pkg string
 			switch c.X.(type) {

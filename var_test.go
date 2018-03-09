@@ -23,6 +23,9 @@ var i5 = []int{1,2,3,4,5}
 
 var i6 = 10i
 
+var i7 = make([]int, 10)
+
+var i8 = new(int)
 `
 
 func TestVariable(t *testing.T) {
@@ -43,14 +46,12 @@ func TestVariable(t *testing.T) {
 			i, err := p.FindVariable("i1")
 			So(err, ShouldBeNil)
 			So(i.Name, ShouldEqual, "i1")
-			So(i.Name, ShouldEqual, "i1")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "int")
 		})
 
 		Convey("by value i2", func() {
 			i, err := p.FindVariable("i2")
 			So(err, ShouldBeNil)
-			So(i.Name, ShouldEqual, "i2")
 			So(i.Name, ShouldEqual, "i2")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "float64")
 		})
@@ -59,14 +60,12 @@ func TestVariable(t *testing.T) {
 			i, err := p.FindVariable("i3")
 			So(err, ShouldBeNil)
 			So(i.Name, ShouldEqual, "i3")
-			So(i.Name, ShouldEqual, "i3")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "string")
 		})
 
 		Convey("by value i4", func() {
 			i, err := p.FindVariable("i4")
 			So(err, ShouldBeNil)
-			So(i.Name, ShouldEqual, "i4")
 			So(i.Name, ShouldEqual, "i4")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "char")
 		})
@@ -75,7 +74,6 @@ func TestVariable(t *testing.T) {
 			i, err := p.FindVariable("i5")
 			So(err, ShouldBeNil)
 			So(i.Name, ShouldEqual, "i5")
-			So(i.Name, ShouldEqual, "i5")
 			So(i.Type.(*ArrayType).Type.(*IdentType).Ident, ShouldEqual, "int")
 		})
 
@@ -83,8 +81,24 @@ func TestVariable(t *testing.T) {
 			i, err := p.FindVariable("i6")
 			So(err, ShouldBeNil)
 			So(i.Name, ShouldEqual, "i6")
-			So(i.Name, ShouldEqual, "i6")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "complex64")
+		})
+
+		Convey("call builtin func", func() {
+			So(p.Bind(), ShouldBeNil)
+			Convey("make func i7", func() {
+				i, err := p.FindVariable("i7")
+				So(err, ShouldBeNil)
+				So(i.Name, ShouldEqual, "i7")
+				So(i.Type.(*ArrayType).Type.(*IdentType).Ident, ShouldEqual, "int")
+			})
+
+			Convey("new func i8", func() {
+				i, err := p.FindVariable("i8")
+				So(err, ShouldBeNil)
+				So(i.Name, ShouldEqual, "i8")
+				So(i.Type.(*StarType).Target.(*IdentType).Ident, ShouldEqual, "int")
+			})
 		})
 	})
 }
