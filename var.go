@@ -53,6 +53,8 @@ func (v *Variable) lateBind() error {
 					tt := newType(v.pkg, v.file, v.caller.Args[0])
 					v.Type = &StarType{
 						Target: tt,
+						pkg:    v.pkg,
+						file:   v.file,
 					}
 				}
 				break
