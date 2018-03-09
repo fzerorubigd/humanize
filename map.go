@@ -16,10 +16,12 @@ func (m *MapType) String() string {
 	return fmt.Sprintf("map[%s]%s", m.Key.String(), m.Value.String())
 }
 
+// Package return the map package
 func (m *MapType) Package() *Package {
 	return m.pkg
 }
 
+// Equal check if the type is equal?
 func (m *MapType) Equal(t Type) bool {
 	v, ok := t.(*MapType)
 	if !ok {
@@ -28,7 +30,6 @@ func (m *MapType) Equal(t Type) bool {
 	if !m.pkg.Equal(v.pkg) {
 		return false
 	}
-
 	return m.Key.Equal(v.Key) && m.Value.Equal(m.Value)
 }
 
