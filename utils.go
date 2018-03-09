@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"io/ioutil"
 	"os"
+	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -21,7 +22,16 @@ var (
 
 func translateToFullPath(path string, packages ...string) (string, error) {
 	root := runtime.GOROOT()
-	gopath := strings.Split(os.Getenv("GOPATH"), ":")
+	p := os.Getenv("GOPATH")
+	if p == "" {
+		// TODO : go 1.7 has a default gopath value, must check for other values
+		usr, err := user.Current()
+		if err != nil {
+			return "", err
+		}
+		p = filepath.Join(usr.HomeDir, "go")
+	}
+	gopath := strings.Split(p, ":")
 	gopath = append([]string{root}, gopath...)
 	var (
 		test string
