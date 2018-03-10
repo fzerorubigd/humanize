@@ -36,10 +36,6 @@ func (c *ChannelType) Equal(t Type) bool {
 		return false
 	}
 
-	if !c.pkg.Equal(v.pkg) {
-		return false
-	}
-
 	if c.Direction != v.Direction {
 		return false
 	}

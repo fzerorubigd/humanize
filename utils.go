@@ -63,9 +63,8 @@ func getGoFileContent(path, folder string, f os.FileInfo) (string, error) {
 	if f.IsDir() {
 		if path != folder {
 			return "", filepath.SkipDir
-		} else {
-			return "", nil
 		}
+		return "", nil
 	}
 	if filepath.Ext(path) != ".go" {
 		return "", nil

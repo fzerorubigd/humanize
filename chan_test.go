@@ -11,6 +11,8 @@ package test
 
 type CHAN chan int
 
+type CHAN2 chan <- int
+
 var NON =  make(chan int)
 
 var NONC = make(CHAN)
@@ -34,6 +36,21 @@ func TestChan(t *testing.T) {
 			So(t.Type, ShouldHaveSameTypeAs, &ChannelType{})
 			So(t.Type.Package().Equal(p), ShouldBeTrue)
 			So(t.Type.String(), ShouldEqual, "chan int")
+		})
+
+		Convey("Equality", func() {
+			t, err := p.FindType("CHAN")
+			So(err, ShouldBeNil)
+			non, err := p.FindVariable("NON")
+			So(err, ShouldBeNil)
+			So(non.Type.Equal(t.Type), ShouldBeTrue)
+			nonc, err := p.FindVariable("NONC")
+			So(err, ShouldBeNil)
+			So(nonc.Type.Equal(t.Type), ShouldBeFalse)
+			t2, err := p.FindType("CHAN2")
+			So(err, ShouldBeNil)
+			So(t.Type.Equal(t2.Type), ShouldBeFalse)
+			So(t.Type.Equal(t.Type.(*ChannelType).Type), ShouldBeFalse)
 		})
 	})
 }

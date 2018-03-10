@@ -34,11 +34,7 @@ func (m *MapType) Equal(t Type) bool {
 }
 
 func (m *MapType) lateBind() error {
-	if err := lateBind(m.Key); err != nil {
-		return err
-	}
-
-	return lateBind(m.Value)
+	return lateBind(m.Key, m.Value)
 }
 
 func getMap(p *Package, f *File, t *ast.MapType) Type {

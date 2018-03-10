@@ -1,7 +1,6 @@
 package humanize
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -42,7 +41,6 @@ func TestMap(t *testing.T) {
 			So(err, ShouldBeNil)
 			n, err := p.FindVariable("n")
 			So(err, ShouldBeNil)
-			fmt.Printf("%T", m.Type)
 			So(m.Type.Equal(n.Type), ShouldBeTrue)
 		})
 	})
