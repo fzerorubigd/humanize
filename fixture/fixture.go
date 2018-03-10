@@ -8,9 +8,9 @@ import (
 	"github.com/fzerorubigd/onion"
 )
 
-var X, err = os.Open("the_file")
+var x, err = os.Open("the_file")
 
-var Y *os.File
+var y *os.File
 
 type f struct {
 }
@@ -24,32 +24,39 @@ type f3 struct {
 	*onion.Onion
 }
 
+// T1 test
 type T1 interface {
 	Test()
 }
 
+// T2 Test
 type T2 interface {
 	TestStar()
 }
 
+// T3 Test
 type T3 interface {
 	Test()
 	TestStar()
 }
 
+// T4 test
 type T4 interface {
 	T3
 	SetDelimiter(d string)
 }
 
+// NewF test
 func NewF() *f {
 	return &f{}
 }
 
+// NewFile test
 func NewFile() *os.File {
-	return Y
+	return y
 }
 
+// NoReturn test
 func NoReturn() {
 
 }
