@@ -64,7 +64,20 @@ func Some2() error {
 	return nil
 }
 
+func Compare(int, int) (int, error) {
 
+}
+
+func Another(int, int) (int, error) {
+
+}
+
+func Compare2(int) (int, error) {
+
+}
+
+func Compare3(int,int)int{
+}
 `
 
 func TestFunctionData(t *testing.T) {
@@ -172,26 +185,41 @@ func TestFunctionData(t *testing.T) {
 		})
 
 		Convey("compare functions", func() {
-			_, err := p.FindFunction("Some")
+			fn1, err := p.FindFunction("Some")
 			So(err, ShouldBeNil)
-			_, err = p.FindFunction("Boogh.Some")
-			So(err, ShouldBeNil)
-
-			//So(compareFunc(fn1, fn2), ShouldBeFalse)
-
-			_, err = p.FindFunction("Some1")
-			So(err, ShouldBeNil)
-			_, err = p.FindFunction("Boogh.Some1")
+			fn2, err := p.FindFunction("Boogh.Some")
 			So(err, ShouldBeNil)
 
-			//So(compareFunc(fn1, fn2), ShouldBeFalse)
+			So(fn1.Equal(fn2), ShouldBeFalse)
+			So(fn1.Type.Equal(fn2.Type), ShouldBeFalse)
 
-			_, err = p.FindFunction("Some2")
+			fn1, err = p.FindFunction("Some1")
 			So(err, ShouldBeNil)
-			_, err = p.FindFunction("Boogh.Some2")
+			fn2, err = p.FindFunction("Boogh.Some1")
 			So(err, ShouldBeNil)
 
-			//So(compareFunc(fn1, fn2), ShouldBeFalse)
+			So(fn1.Equal(fn2), ShouldBeFalse)
+			So(fn1.Type.Equal(fn2.Type), ShouldBeFalse)
+
+			fn1, err = p.FindFunction("Compare")
+			So(err, ShouldBeNil)
+			fn2, err = p.FindFunction("Another")
+			So(err, ShouldBeNil)
+			So(fn1.Equal(fn2), ShouldBeFalse)
+			So(fn1.Type.Equal(fn2.Type), ShouldBeTrue)
+
+			fn3, err := p.FindFunction("Compare2")
+			So(err, ShouldBeNil)
+
+			fn4, err := p.FindFunction("Compare3")
+			So(err, ShouldBeNil)
+
+			So(fn1.Equal(fn3), ShouldBeFalse)
+			So(fn1.Type.Equal(fn3.Type), ShouldBeFalse)
+
+			So(fn1.Equal(fn4), ShouldBeFalse)
+			So(fn1.Type.Equal(fn4.Type), ShouldBeFalse)
+
 		})
 	})
 }
