@@ -1,5 +1,7 @@
 package humanize
 
+// TODO : iota support is very limited and bad
+
 import (
 	"fmt"
 	"go/ast"
@@ -30,12 +32,10 @@ func (c *Constant) String() string {
 	return fmt.Sprintf("%s %s = %s", c.Name, c.Type.String(), c.Value)
 }
 
+// Equal check for equality
+// TODO : currently it check if the value is equal and the type is equal too.
 func (c *Constant) Equal(t *Constant) bool {
-	if !c.pkg.Equal(t.pkg) {
-		return false
-	}
-
-	if c.Name != t.Name {
+	if c.Value != t.Value {
 		return false
 	}
 

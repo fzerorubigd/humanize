@@ -28,6 +28,14 @@ const i6 = 10i
 
 `
 
+var otherC = `
+package test2
+
+const i7 = 10i
+
+const i6 = 1000
+`
+
 func TestConstant(t *testing.T) {
 	Convey("constant test", t, func() {
 		f, err := ParseFile(cr, &Package{})
@@ -36,6 +44,7 @@ func TestConstant(t *testing.T) {
 			Name: "test",
 		}
 		p.Files = append(p.Files, f)
+		So(p.Bind(), ShouldBeNil)
 		Convey("Normal define", func() {
 			i, err := p.FindConstant("i")
 			So(err, ShouldBeNil)
@@ -67,14 +76,12 @@ func TestConstant(t *testing.T) {
 			i, err := p.FindConstant("i2")
 			So(err, ShouldBeNil)
 			So(i.Name, ShouldEqual, "i2")
-			So(i.Name, ShouldEqual, "i2")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "float64")
 		})
 
 		Convey("by value i3", func() {
 			i, err := p.FindConstant("i3")
 			So(err, ShouldBeNil)
-			So(i.Name, ShouldEqual, "i3")
 			So(i.Name, ShouldEqual, "i3")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "string")
 		})
@@ -83,7 +90,6 @@ func TestConstant(t *testing.T) {
 			i, err := p.FindConstant("i4")
 			So(err, ShouldBeNil)
 			So(i.Name, ShouldEqual, "i4")
-			So(i.Name, ShouldEqual, "i4")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "char")
 		})
 
@@ -91,8 +97,32 @@ func TestConstant(t *testing.T) {
 			i, err := p.FindConstant("i6")
 			So(err, ShouldBeNil)
 			So(i.Name, ShouldEqual, "i6")
-			So(i.Name, ShouldEqual, "i6")
 			So(i.Type.(*IdentType).Ident, ShouldEqual, "complex64")
+
+			Convey("equality", func() {
+				So(i.Equal(i), ShouldBeTrue)
+				i2, err := p.FindConstant("i4")
+				So(err, ShouldBeNil)
+				So(i.Equal(i2), ShouldBeFalse)
+			})
+
+			Convey("other package", func() {
+				f, err := ParseFile(otherC, &Package{})
+				So(err, ShouldBeNil)
+				var p2 = &Package{
+					Name: "test2",
+				}
+				p2.Files = append(p2.Files, f)
+				So(p2.Bind(), ShouldBeNil)
+
+				i3, err := p2.FindConstant("i6")
+				So(err, ShouldBeNil)
+				So(i3.Equal(i), ShouldBeFalse)
+
+				i4, err := p2.FindConstant("i7")
+				So(err, ShouldBeNil)
+				So(i4.Equal(i), ShouldBeTrue)
+			})
 		})
 	})
 }
