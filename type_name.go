@@ -17,6 +17,7 @@ type TypeName struct {
 	StarMethods []*Function
 }
 
+// Equal if two type name are equal
 func (tn *TypeName) Equal(t *TypeName) bool {
 	if !tn.pkg.Equal(t.pkg) {
 		return false
@@ -29,6 +30,7 @@ func (tn *TypeName) Equal(t *TypeName) bool {
 	return tn.Type.Equal(t.Type)
 }
 
+// InstanceOf if this type is instance of some other type
 func (tn *TypeName) InstanceOf(t Type, samePkg bool) (bool, bool) {
 	var pointer bool
 	if v, ok := t.(*StarType); ok {
@@ -77,10 +79,12 @@ func (tn *TypeName) lateBind() error {
 	return nil
 }
 
+// Package return the package name of this type name
 func (tn *TypeName) Package() *Package {
 	return tn.pkg
 }
 
+// File return the filename of this type name
 func (tn *TypeName) File() *File {
 	return tn.file
 }

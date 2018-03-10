@@ -78,7 +78,7 @@ func getGoFileContent(path, folder string, f os.FileInfo) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer r.Close()
+	defer func() { _ = r.Close() }()
 
 	data, err := ioutil.ReadAll(r)
 	if err != nil {

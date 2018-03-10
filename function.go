@@ -5,6 +5,7 @@ import (
 	"go/ast"
 )
 
+// Function is functions with name, not the func types
 type Function struct {
 	pkg  *Package
 	file *File
@@ -15,6 +16,7 @@ type Function struct {
 	Receiver *Variable // Nil means normal function
 }
 
+// String convert function object to go code
 func (f *Function) String() string {
 	s := "func "
 	if f.Receiver != nil {
@@ -24,6 +26,7 @@ func (f *Function) String() string {
 	return s
 }
 
+// Equal check if two functions are equal
 func (f *Function) Equal(t *Function) bool {
 	if !f.pkg.Equal(t.pkg) {
 		return false
@@ -61,10 +64,12 @@ func (f *Function) lateBind() error {
 	return nil
 }
 
+// Package get the package of function
 func (f *Function) Package() *Package {
 	return f.pkg
 }
 
+// File get the file of function
 func (f *Function) File() *File {
 	return f.file
 }

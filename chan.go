@@ -4,6 +4,7 @@ import (
 	"go/ast"
 )
 
+// ChannelType is the channel type in go source code
 type ChannelType struct {
 	pkg *Package
 
@@ -15,6 +16,7 @@ func (c *ChannelType) lateBind() error {
 	return lateBind(c.Type)
 }
 
+// String represent string version of the data
 func (c *ChannelType) String() string {
 	switch c.Direction {
 	case ast.SEND:
@@ -26,10 +28,12 @@ func (c *ChannelType) String() string {
 	}
 }
 
+// Package is the package of channel
 func (c *ChannelType) Package() *Package {
 	return c.pkg
 }
 
+// Equal check if two channel are exported
 func (c *ChannelType) Equal(t Type) bool {
 	v, ok := t.(*ChannelType)
 	if !ok {

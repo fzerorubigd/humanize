@@ -13,6 +13,7 @@ type Package struct {
 	Files []*File
 }
 
+// Bind try to bind package. this check every type and bind them to actual value
 func (p *Package) Bind() error {
 	for i := range p.Files {
 		if err := p.Files[i].lateBind(); err != nil {
@@ -23,6 +24,7 @@ func (p *Package) Bind() error {
 	return nil
 }
 
+// Equal check if to packages are equal
 func (p *Package) Equal(t *Package) bool {
 	return p.Path == t.Path
 }
@@ -33,18 +35,18 @@ func parsePackageFullPath(path, folder string) (*Package, error) {
 	}
 
 	var (
-		p   = &Package{}
-		err error
+		p = &Package{}
+		e error
 	)
 	p.Path = path
-	err = filepath.Walk(
+	e = filepath.Walk(
 		folder,
-		func(path string, f os.FileInfo, err error) error {
+		func(path string, f os.FileInfo, _ error) error {
 			data, err := getGoFileContent(path, folder, f)
 			if err != nil || data == "" {
 				return err
 			}
-			fl, err := ParseFile(string(data), p)
+			fl, err := ParseFile(data, p)
 			if err != nil {
 				return err
 			}
@@ -57,8 +59,8 @@ func parsePackageFullPath(path, folder string) (*Package, error) {
 			return nil
 		},
 	)
-	if err != nil {
-		return nil, err
+	if e != nil {
+		return nil, e
 	}
 	setCache(folder, p)
 

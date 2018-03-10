@@ -13,10 +13,12 @@ func (s *StarType) String() string {
 	return "*" + s.Target.String()
 }
 
+// Package get the package name
 func (s *StarType) Package() *Package {
 	return s.pkg
 }
 
+// Equal check if two star type are equal
 func (s *StarType) Equal(t Type) bool {
 	v, ok := t.(*StarType)
 	if !ok {

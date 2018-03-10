@@ -71,6 +71,7 @@ func TestArray(t *testing.T) {
 			p2, err := httpP.LoadPackage()
 			So(err, ShouldBeNil)
 			req, err := p2.FindType("Request")
+			So(err, ShouldBeNil)
 			So(t.Equal(req), ShouldBeFalse)
 			So(t.Type.Equal(req.Type), ShouldBeFalse)
 

@@ -28,6 +28,7 @@ func (c *Constant) lateBind() error {
 	return lateBind(c.Type)
 }
 
+// String is the constant in go source code
 func (c *Constant) String() string {
 	return fmt.Sprintf("%s %s = %s", c.Name, c.Type.String(), c.Value)
 }

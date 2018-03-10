@@ -35,8 +35,8 @@ func TestSelector(t *testing.T) {
 
 			fn, err := p.FindFunction("Test")
 			So(err, ShouldBeNil)
-
 			t := fn.Type.Parameters[0]
+
 			So(t.Type, ShouldHaveSameTypeAs, &SelectorType{})
 			So(t.Type.Package().Name, ShouldEqual, "http")
 		})

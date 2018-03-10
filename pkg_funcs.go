@@ -29,6 +29,7 @@ func (p *Package) FindImport(pkg string) (*Import, error) {
 	return nil, fmt.Errorf("pkg %s is not found in %s", pkg, p.Name)
 }
 
+// FindType try to find type in file
 func (f *File) FindType(t string) (*TypeName, error) {
 	for i := range f.Types {
 		if f.Types[i].Name == t {
@@ -38,6 +39,7 @@ func (f *File) FindType(t string) (*TypeName, error) {
 	return nil, fmt.Errorf("type %s is not found in %s", t, f.FileName)
 }
 
+// FindType try to find type in package
 func (p *Package) FindType(t string) (*TypeName, error) {
 	for i := range p.Files {
 		if ty, err := p.Files[i].FindType(t); err == nil {
@@ -47,6 +49,7 @@ func (p *Package) FindType(t string) (*TypeName, error) {
 	return nil, fmt.Errorf("type %s is not found in %s", t, p.Name)
 }
 
+// FindConstant try to find constant in package
 func (f *File) FindConstant(t string) (*Constant, error) {
 	for i := range f.Constants {
 		if f.Constants[i].Name == t {
@@ -56,6 +59,7 @@ func (f *File) FindConstant(t string) (*Constant, error) {
 	return nil, fmt.Errorf("const %s is not found in %s", t, f.FileName)
 }
 
+// FindConstant try to find constant in package
 func (p *Package) FindConstant(t string) (*Constant, error) {
 	for i := range p.Files {
 		if ct, err := p.Files[i].FindConstant(t); err == nil {
@@ -65,6 +69,7 @@ func (p *Package) FindConstant(t string) (*Constant, error) {
 	return nil, fmt.Errorf("const %s is not found in %s", t, p.Name)
 }
 
+// FindFunction try to find function in file
 func (f *File) FindFunction(t string) (*Function, error) {
 	for i := range f.Functions {
 		if f.Functions[i].Name == t {
@@ -74,6 +79,7 @@ func (f *File) FindFunction(t string) (*Function, error) {
 	return nil, fmt.Errorf("function %s is not found in %s", t, f.FileName)
 }
 
+// FindFunction try to find function in package
 func (p *Package) FindFunction(t string) (*Function, error) {
 	for i := range p.Files {
 		if ct, err := p.Files[i].FindFunction(t); err == nil {
@@ -83,6 +89,7 @@ func (p *Package) FindFunction(t string) (*Function, error) {
 	return nil, fmt.Errorf("function %s is not found in %s", t, p.Name)
 }
 
+// FindVariable try to find variable in file
 func (f *File) FindVariable(t string) (*Variable, error) {
 	for i := range f.Variables {
 		if f.Variables[i].Name == t {
@@ -92,6 +99,7 @@ func (f *File) FindVariable(t string) (*Variable, error) {
 	return nil, fmt.Errorf("variable %s is not found in %s", t, f.FileName)
 }
 
+// FindVariable try to find variable in package
 func (p *Package) FindVariable(t string) (*Variable, error) {
 	for i := range p.Files {
 		if ct, err := p.Files[i].FindVariable(t); err == nil {

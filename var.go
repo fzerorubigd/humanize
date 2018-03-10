@@ -25,6 +25,7 @@ func (v *Variable) String() string {
 	return v.Name + " " + v.Type.String()
 }
 
+// Equal if two variables are equal
 func (v *Variable) Equal(t *Variable) bool {
 	if v.pkg.Path != t.pkg.Path {
 		return false
@@ -37,43 +38,98 @@ func (v *Variable) Equal(t *Variable) bool {
 	return v.Type.Equal(t.Type)
 }
 
+func getForeignType(pkgName string, fl *File, foreignTyp Type) Type {
+	star := false
+	if sType, ok := foreignTyp.(*StarType); ok {
+		foreignTyp = sType.Target
+		star = true
+	}
+
+	switch ft := foreignTyp.(type) {
+	case *IdentType:
+		// this is a simple hack. if the type is begin with
+		// upper case, then its type on that package,
+		// else its a global type
+		name := ft.Ident
+		c := name[0]
+		if c >= 'A' && c <= 'Z' {
+			if star {
+				foreignTyp = &StarType{
+					Target: foreignTyp,
+				}
+			}
+			return &SelectorType{
+				selector: pkgName,
+				file:     fl,
+				Type:     foreignTyp,
+			}
+		}
+		if star {
+			foreignTyp = &StarType{
+				Target: foreignTyp,
+			}
+		}
+		return foreignTyp
+
+	default:
+		// the type is foreign to that package too
+		return ft
+	}
+
+}
+
+func getBuiltinFunc(name string, v *Variable) Type {
+	fn, err := getBuiltin().FindFunction(name)
+	if err == nil {
+		// make and new are exceptions,
+		if fn.Name == "make" {
+			return newType(v.pkg, v.file, v.caller.Args[0])
+		}
+
+		if fn.Name == "new" {
+			tt := newType(v.pkg, v.file, v.caller.Args[0])
+			return &StarType{
+				Target: tt,
+				pkg:    v.pkg,
+				file:   v.file,
+			}
+		}
+	}
+
+	return nil
+
+}
+
+func getNormalFunc(name string, v *Variable) (Type, error) {
+	fn, err := v.pkg.FindFunction(name)
+	if err == nil {
+		if len(fn.Type.Results) <= v.index {
+			return nil, fmt.Errorf("%d result is available but want the %d", len(fn.Type.Results), v.index)
+		}
+		return fn.Type.Results[v.index].Type, nil
+	}
+	t, err := checkTypeCast(v.pkg, getBuiltin(), v.caller.Args, name)
+	if err != nil {
+		return nil, err
+	}
+	return t, err
+}
+
 func (v *Variable) lateBind() error {
 	if v.caller != nil {
 		switch c := v.caller.Fun.(type) {
 		case *ast.Ident:
 			name := nameFromIdent(c)
-			fn, err := getBuiltin().FindFunction(name)
-			if err == nil {
-				// make and new are exceptions,
-				if fn.Name == "make" {
-					v.Type = newType(v.pkg, v.file, v.caller.Args[0])
-				}
-
-				if fn.Name == "new" {
-					tt := newType(v.pkg, v.file, v.caller.Args[0])
-					v.Type = &StarType{
-						Target: tt,
-						pkg:    v.pkg,
-						file:   v.file,
-					}
-				}
+			t := getBuiltinFunc(name, v)
+			if t != nil {
+				v.Type = t
 				break
 			}
 
-			fn, err = v.pkg.FindFunction(name)
-			var t Type
-			if err == nil {
-				if len(fn.Type.Results) <= v.index {
-					return fmt.Errorf("%d result is available but want the %d", len(fn.Type.Results), v.index)
-				}
-				t = fn.Type.Results[v.index].Type
-			} else {
-				t, err = checkTypeCast(v.pkg, getBuiltin(), v.caller.Args, name)
-				if err != nil {
-					return err
-				}
+			t, err := getNormalFunc(name, v)
+			if err != nil {
+				return err
 			}
-
 			v.Type = t
 
 		case *ast.SelectorExpr:
@@ -110,51 +166,18 @@ func (v *Variable) lateBind() error {
 			}
 
 			foreignTyp := t
-			star := false
-			if sType, ok := foreignTyp.(*StarType); ok {
-				foreignTyp = sType.Target
-				star = true
-			}
-			switch ft := foreignTyp.(type) {
-			case *IdentType:
-				// this is a simple hack. if the type is begin with
-				// upper case, then its type on that package,
-				// else its a global type
-				name := ft.Ident
-				c := name[0]
-				if c >= 'A' && c <= 'Z' {
-					if star {
-						foreignTyp = &StarType{
-							Target: foreignTyp,
-						}
-					}
-					v.Type = &SelectorType{
-						selector: pkg,
-						file:     v.file,
-						Type:     foreignTyp,
-					}
-				} else {
-					if star {
-						foreignTyp = &StarType{
-							Target: foreignTyp,
-						}
-					}
-					v.Type = foreignTyp
-				}
-
-			default:
-				// the type is foreign to that package too
-				v.Type = ft
-			}
+			v.Type = getForeignType(pkg, v.file, foreignTyp)
 		}
 	}
 	return lateBind(v.Type)
 }
 
+// Package the package name of this variable
 func (v *Variable) Package() *Package {
 	return v.pkg
 }
 
+// File the filename of this variable
 func (v *Variable) File() *File {
 	return v.file
 }

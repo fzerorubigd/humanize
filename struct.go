@@ -15,15 +15,17 @@ type Field struct {
 	Tags reflect.StructTag
 }
 
-// Embeds is the embeded type in the struct or interface
+// Embed is the embedded type in the struct or interface
 type Embed struct {
 	Type
 	Docs Docs
 	Tags reflect.StructTag
 }
 
+// Embeds is a list of embedded items
 type Embeds []*Embed
 
+// Equal check for equality for two embedded item
 func (e Embeds) Equal(t Embeds) bool {
 	for i := range e {
 		for j := range t {
@@ -37,8 +39,10 @@ func (e Embeds) Equal(t Embeds) bool {
 	return true
 }
 
+// Fields a list of fields
 type Fields []*Field
 
+// Equal check fields equality
 func (f Fields) Equal(t Fields) bool {
 	for i := range f {
 		for j := range t {
@@ -53,12 +57,14 @@ func (f Fields) Equal(t Fields) bool {
 
 }
 
+// StructType is the structures in golang source code
 type StructType struct {
 	pkg    *Package
 	Fields Fields
 	Embeds Embeds
 }
 
+// String convert struct to string
 func (s *StructType) String() string {
 	if len(s.Embeds) == 0 && len(s.Fields) == 0 {
 		return "struct{}"
@@ -78,6 +84,7 @@ func (s *StructType) String() string {
 	return res + "}"
 }
 
+// Package return the package of this struct
 func (s *StructType) Package() *Package {
 	return s.pkg
 }
@@ -98,6 +105,7 @@ func (s *StructType) lateBind() error {
 	return nil
 }
 
+// Equal check structs equality
 func (s *StructType) Equal(t Type) bool {
 	v, ok := t.(*StructType)
 	if !ok {

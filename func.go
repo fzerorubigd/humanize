@@ -17,6 +17,7 @@ func (f *FuncType) getDefinitionWithName(name string) string {
 	return "func " + name + f.Sign()
 }
 
+// Sign return the function sign
 func (f *FuncType) Sign() string {
 	var args, res []string
 	for a := range f.Parameters {
@@ -37,14 +38,17 @@ func (f *FuncType) Sign() string {
 	return result
 }
 
+// String is the string representation of func type
 func (f *FuncType) String() string {
 	return "func " + f.Sign()
 }
 
+// Package is the func package
 func (f *FuncType) Package() *Package {
 	return f.pkg
 }
 
+// Equal check func type equality
 func (f *FuncType) Equal(t Type) bool {
 	v, ok := t.(*FuncType)
 	if !ok {
@@ -99,10 +103,10 @@ func getVariableList(p *Package, fl *File, f *ast.FieldList) []*Variable {
 		return res
 	}
 	for i := range f.List {
-		n := f.List[i].Names
-		if n != nil {
-			for in := range n {
-				p := variableFromExpr(p, fl, nameFromIdent(n[in]), f.List[i].Type)
+		n := f.List[i]
+		if n.Names != nil {
+			for in := range n.Names {
+				p := variableFromExpr(p, fl, nameFromIdent(n.Names[in]), f.List[i].Type)
 				res = append(res, p)
 			}
 		} else {

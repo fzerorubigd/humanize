@@ -2,7 +2,7 @@ package humanize
 
 import "go/ast"
 
-// InterfaceType is the
+// InterfaceType is the interface in go code
 type InterfaceType struct {
 	pkg       *Package
 	Functions []*Function
@@ -24,6 +24,7 @@ func (i *InterfaceType) String() string {
 	return res + "}"
 }
 
+// Equal if both interfaces are equal
 func (i *InterfaceType) Equal(t Type) bool {
 	v, ok := t.(*InterfaceType)
 	if !ok {
@@ -57,6 +58,7 @@ methodLoop:
 	return true
 }
 
+// Package get the interface package
 func (i *InterfaceType) Package() *Package {
 	return i.pkg
 }
@@ -91,7 +93,7 @@ func getInterface(p *Package, f *File, t *ast.InterfaceType) Type {
 			res.Type = typ.(*FuncType)
 			iface.Functions = append(iface.Functions, &res)
 		} else {
-			// This is the embeded interface
+			// This is the embedded interface
 			embed := newType(p, f, t.Methods.List[i].Type)
 			iface.Embeds = append(iface.Embeds, embed)
 		}

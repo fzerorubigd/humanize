@@ -70,9 +70,9 @@ func peekPackageName(pkg string, base ...string) (string, string) {
 		return name, ""
 	}
 	iw := &importWalker{}
-	err = filepath.Walk(
+	_ = filepath.Walk(
 		folder,
-		func(path string, f os.FileInfo, err error) error {
+		func(path string, f os.FileInfo, _ error) error {
 			data, err := getGoFileContent(path, folder, f)
 			if err != nil || data == "" {
 				return err

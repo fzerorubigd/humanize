@@ -19,6 +19,7 @@ type EllipsisType struct {
 	*ArrayType
 }
 
+// Equal check array type equality
 func (a *ArrayType) Equal(t Type) bool {
 	if !a.pkg.Equal(t.Package()) {
 		return false
@@ -39,6 +40,7 @@ func (a *ArrayType) Equal(t Type) bool {
 	return a.Type.Equal(v.Type)
 }
 
+// String represent array in string
 func (a *ArrayType) String() string {
 	if a.Slice {
 		return "[]" + a.Type.String()
@@ -46,6 +48,7 @@ func (a *ArrayType) String() string {
 	return fmt.Sprintf("[%d]%s", a.Len, a.Type.String())
 }
 
+// Package return the array package
 func (a *ArrayType) Package() *Package {
 	return a.pkg
 }
@@ -54,10 +57,12 @@ func (a *ArrayType) lateBind() error {
 	return lateBind(a.Type)
 }
 
+// String represent ellipsis array in string
 func (e *EllipsisType) String() string {
 	return fmt.Sprintf("[...]%s{}", e.Type.String())
 }
 
+// Equal if two ellipsis array are equal
 func (e EllipsisType) Equal(t Type) bool {
 	if v, ok := t.(*EllipsisType); ok {
 		return e.ArrayType.Equal(v.ArrayType)
@@ -82,8 +87,7 @@ func getArray(p *Package, f *File, t *ast.ArrayType) Type {
 		}
 		l, _ = strconv.Atoi(ls)
 	}
-	var at Type
-	at = &ArrayType{
+	var at Type = &ArrayType{
 		pkg:   p,
 		Slice: t.Len == nil,
 		Len:   l,

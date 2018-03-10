@@ -19,12 +19,14 @@ func (s *SelectorType) String() string {
 	return s.selector + "." + s.Type.String()
 }
 
+// Package is the package of selector
 func (s *SelectorType) Package() *Package {
 	return s.Type.Package()
 }
 
+// Equal if two types are equal
 func (s *SelectorType) Equal(t Type) bool {
-	if b := s.Type.Equal(t); b == true {
+	if b := s.Type.Equal(t); b {
 		return b
 	}
 
@@ -36,6 +38,7 @@ func (s *SelectorType) Equal(t Type) bool {
 	return s.Type.Equal(v.Type)
 }
 
+// TargetPackage is the selector target package
 func (s *SelectorType) TargetPackage() (*Package, error) {
 	if s.imp != nil {
 		return s.imp.LoadPackage()

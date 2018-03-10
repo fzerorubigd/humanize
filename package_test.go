@@ -58,13 +58,10 @@ var s = fixture.NewF()
 var f = fixture.NewFile()
 `
 
-const invalidReceiver = `
-package invalid
-
-func (x test) InvaidRec() {
-
-}
-`
+//const invalidReceiver = `
+//package invalid
+//func (x test) InvaidRec() {
+//}`
 
 func TestCurrentPackage(t *testing.T) {
 	Convey("Current package", t, func() {

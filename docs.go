@@ -5,8 +5,10 @@ import (
 	"strings"
 )
 
+// Docs is the code documents
 type Docs []string
 
+// String convert object to go docs again
 func (d Docs) String() string {
 	return strings.Join(d, "\n")
 }

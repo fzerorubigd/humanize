@@ -12,10 +12,12 @@ func (i *IdentType) String() string {
 	return i.Ident
 }
 
+// Package get the package of ident
 func (i *IdentType) Package() *Package {
 	return i.pkg
 }
 
+// Equal check if two ident are equal
 func (i *IdentType) Equal(t Type) bool {
 	v, ok := t.(*IdentType)
 	if !ok {
